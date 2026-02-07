@@ -1,9 +1,3 @@
-
----
-
-## ✅ `frontend/README.md`
-
-```md
 # Edu AI Exam System — Frontend (React + Bootstrap + Tabler UI)
 
 Frontend dashboard for the Edu AI Exam System (Final Year Thesis Project).  
