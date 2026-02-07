@@ -1,0 +1,84 @@
+.tile {
+  height: 520px; /* controls big tile height */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tile-img {
+  flex: 0 0 56%; /* image height ratio */
+  position: relative;
+}
+
+.tile-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tile-panel {
+  flex: 1; /* remaining height */
+  padding: 44px 42px;
+  color: #fff;
+  display: flex;
+  align-items: flex-start;
+}
+
+.tile-icon {
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-icon svg {
+  width: 64px;
+  height: 64px;
+  stroke: #fff; /* for outline icons */
+  fill: none;
+}
+
+.tile-title {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.tile-desc {
+  font-size: 16px;
+  line-height: 1.6;
+  opacity: 0.95;
+  max-width: 520px;
+}
+
+/* colors like screenshot */
+.tile-purple {
+  background: #3f3b73;
+}
+.tile-orange {
+  background: #f49b13;
+}
+.tile-teal {
+  background: #00c6c6;
+}
+
+/* responsive */
+@media (max-width: 991px) {
+  .tile {
+    height: 540px;
+  }
+  .tile-title {
+    font-size: 34px;
+  }
+  .tile-panel {
+    padding: 34px 26px;
+  }
+  .tile-icon,
+  .tile-icon svg {
+    width: 54px;
+    height: 54px;
+  }
+}
