@@ -7,13 +7,24 @@ import { api } from "../../services/api";
 export default function Exams() {
   const [items, setItems] = useState<any[]>([]);
 
-  const load = async () => {
-    const res = await api.get("/teacher/exams");
-    setItems(res.data.exams || []);
-  };
-
+  // const load = async () => {
+  //   const res = await api.get("/teacher/exams");
+  //   setItems(res.data?.data?.exams || []);
+  // };
+  // useEffect(() => {
+  //   load();
+  // }, []);
   useEffect(() => {
-    load();
+    const fetchData = async () => {
+      try {
+        const res = await api.get("/teacher/exams");
+        setItems(res.data.exams || []);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (

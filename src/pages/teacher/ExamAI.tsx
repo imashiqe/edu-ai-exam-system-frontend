@@ -40,7 +40,6 @@ export default function ExamAI() {
         .map(([k]) => k),
     [types],
   );
-
   const generate = async () => {
     if (!examId) return;
     setErr(null);
@@ -57,11 +56,13 @@ export default function ExamAI() {
       if (syllabusFile) fd.append("syllabus", syllabusFile);
       if (syllabusText.trim()) fd.append("syllabusText", syllabusText.trim());
 
-      const res = await api.post(`/exams/${examId}/ai-generate`, fd, {
+      // ✅ FIX: correct route
+      const res = await api.post(`/exams/teacher/${examId}/ai-generate`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const qs: GenQ[] = res.data.questions || res.data?.data?.questions || [];
+      // ✅ your backend returns { questions: [...] }
+      const qs: GenQ[] = res.data.questions || [];
       setGenerated(qs);
       setOk(`Generated ${qs.length} questions.`);
     } catch (e: any) {
@@ -80,7 +81,8 @@ export default function ExamAI() {
     setOk(null);
 
     try {
-      await api.post(`/exams/${examId}/questions/bulk`, {
+      // ✅ FIX: correct route
+      await api.post(`/exams/teacher/${examId}/questions/bulk`, {
         questions: generated.map((q) => ({
           type: q.type,
           prompt: q.prompt,
@@ -99,6 +101,64 @@ export default function ExamAI() {
       setSaving(false);
     }
   };
+  // const generate = async () => {
+  //   if (!examId) return;
+  //   setErr(null);
+  //   setOk(null);
+  //   setLoading(true);
+
+  //   try {
+  //     const fd = new FormData();
+  //     fd.append("provider", provider);
+  //     fd.append("difficulty", difficulty);
+  //     fd.append("totalQuestions", String(totalQuestions));
+  //     selectedTypes.forEach((t) => fd.append("types[]", t));
+
+  //     if (syllabusFile) fd.append("syllabus", syllabusFile);
+  //     if (syllabusText.trim()) fd.append("syllabusText", syllabusText.trim());
+
+  //     const res = await api.post(`/exams/${examId}/ai-generate`, fd, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+
+  //     const qs: GenQ[] = res.data.questions || res.data?.data?.questions || [];
+  //     setGenerated(qs);
+  //     setOk(`Generated ${qs.length} questions.`);
+  //   } catch (e: any) {
+  //     setErr(e?.response?.data?.message || "Failed to generate");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const addToExam = async () => {
+  //   if (!examId) return;
+  //   if (generated.length === 0) return setErr("Generate questions first.");
+
+  //   setSaving(true);
+  //   setErr(null);
+  //   setOk(null);
+
+  //   try {
+  //     await api.post(`/exams/${examId}/questions/bulk`, {
+  //       questions: generated.map((q) => ({
+  //         type: q.type,
+  //         prompt: q.prompt,
+  //         options: q.options ?? null,
+  //         correctAnswer: q.correctAnswer ?? null,
+  //         marks: q.marks ?? 1,
+  //         source: "AI",
+  //       })),
+  //     });
+
+  //     setOk("AI questions added to exam.");
+  //     setGenerated([]);
+  //   } catch (e: any) {
+  //     setErr(e?.response?.data?.message || "Failed to add to exam");
+  //   } finally {
+  //     setSaving(false);
+  //   }
+  // };
 
   return (
     <>

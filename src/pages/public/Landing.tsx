@@ -5,21 +5,21 @@ const heroTiles = [
   {
     title: "AI Exam Generator",
     desc: "Generate MCQ + Short questions from syllabus using ChatGPT or Gemini — switchable provider.",
-    color: "bg-indigo",
+    color: "#1A2CA3",
     img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=60",
     icon: "🤖",
   },
   {
     title: "Manual Question Builder",
     desc: "Create questions manually with answers, marks, and publish rules — perfect for real classroom control.",
-    color: "bg-orange",
+    color: "#F49B13",
     img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1400&q=60",
     icon: "✍️",
   },
   {
     title: "Instant & Review Results",
     desc: "MCQ auto grading, short answer teacher grading — publish when ready. Retake & time control supported.",
-    color: "bg-teal",
+    color: "#00C6C6",
     img: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1400&q=60",
     icon: "📊",
   },
@@ -127,7 +127,7 @@ export default function Landing() {
       <div className="border-bottom">
         <div className="container py-2 d-flex align-items-center justify-content-between">
           <div className="small text-muted d-flex flex-wrap gap-3">
-            <span>AI Exam System — Final Year Thesis</span>
+            <span>Edu Ai Exam System — Final Year Thesis</span>
             <span className="d-none d-md-inline">
               Role-based • AI + Manual • Instant Result
             </span>
@@ -152,7 +152,7 @@ export default function Landing() {
               style={{ width: 34, height: 34 }}
             />
             <div>
-              <div className="fw-bold lh-1">ExamAI</div>
+              <div className="fw-bold lh-1">Edu Ai</div>
               <div className="text-muted small">AI + Manual Exam Generator</div>
             </div>
           </div>
@@ -194,9 +194,9 @@ export default function Landing() {
         <div className="row g-0">
           {heroTiles.map((t) => (
             <div key={t.title} className="col-12 col-lg-4">
-              <div className="d-flex flex-column h-100" style={{ height: 520 }}>
-                {/* ========= IMAGE ========= */}
-                <div className="flex-shrink-0" style={{ height: "55%" }}>
+              <div className="d-flex flex-column" style={{ height: 520 }}>
+                {/* IMAGE */}
+                <div style={{ height: "55%" }}>
                   <img
                     src={t.img}
                     alt={t.title}
@@ -205,19 +205,19 @@ export default function Landing() {
                   />
                 </div>
 
-                {/* ========= COLOR PANEL ========= */}
+                {/* COLOR */}
                 <div
                   className="flex-grow-1 text-white d-flex align-items-start"
-                  style={{ background: "#2845D6" }}
+                  style={{ backgroundColor: t.color }}
                 >
                   <div className="p-5">
-                    <div className="d-flex align-items-start gap-3 ">
-                      {/* icon */}
-                      <div className="fs-1 lh-1">{t.icon}</div>
+                    <div className="d-flex align-items-start gap-3">
+                      {/* ICON */}
+                      <div className="fs-1">{t.icon}</div>
 
-                      {/* text */}
+                      {/* TEXT */}
                       <div>
-                        <h2 className="fw-bold mb-3" style={{ fontSize: 36 }}>
+                        <h2 className="fw-bold mb-3" style={{ fontSize: 34 }}>
                           {t.title}
                         </h2>
                         <p className="mb-0 opacity-75">{t.desc}</p>

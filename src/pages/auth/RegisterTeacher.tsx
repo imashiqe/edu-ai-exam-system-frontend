@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerTeacher } from "../../services/auth";
+import { toast } from "react-toastify";
 
 export default function RegisterTeacher() {
   const nav = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     name: "",
     institute: "",
@@ -11,27 +14,32 @@ export default function RegisterTeacher() {
     email: "",
     password: "",
   });
-  const [err, setErr] = useState<string | null>(null);
-  const [ok, setOk] = useState<string | null>(null);
 
   const submit = async (e: any) => {
     e.preventDefault();
-    setErr(null);
-    setOk(null);
+    setLoading(true);
+
     try {
       await registerTeacher(form);
-      setOk("Teacher registered. Waiting for Super Admin approval.");
-      setTimeout(() => nav("/login"), 800);
+
+      toast.success(
+        "Registration submitted. Waiting for Super Admin approval 👌",
+      );
+
+      setTimeout(() => nav("/login"), 1000);
     } catch (e: any) {
-      setErr(e?.response?.data?.message || "Failed");
+      toast.error(e?.response?.data?.message || "Registration failed ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
       <div className="fw-bold fs-5 mb-2">Register Teacher</div>
-      {err && <div className="alert alert-danger">{err}</div>}
-      {ok && <div className="alert alert-success">{ok}</div>}
+      <div className="text-muted mb-3">
+        Your account will be activated after admin approval.
+      </div>
 
       <form onSubmit={submit} className="d-grid gap-2">
         <input
@@ -39,6 +47,7 @@ export default function RegisterTeacher() {
           placeholder="Name"
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
+          required
         />
         <input
           className="form-control"
@@ -55,8 +64,10 @@ export default function RegisterTeacher() {
         <input
           className="form-control"
           placeholder="Email"
+          type="email"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
+          required
         />
         <input
           className="form-control"
@@ -64,8 +75,12 @@ export default function RegisterTeacher() {
           type="password"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
+          required
         />
-        <button className="btn btn-primary">Submit for approval</button>
+
+        <button className="btn btn-primary" disabled={loading}>
+          {loading ? "Submitting..." : "Submit for approval"}
+        </button>
       </form>
 
       <div className="mt-3 small">
