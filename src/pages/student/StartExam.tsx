@@ -426,8 +426,37 @@ export default function StartExam() {
   //     setShowSubmitConfirm(false);
   //   }
   // };
+  // const handleSubmit = async (auto = false) => {
+  //   if (!attemptId) return;
+
+  //   setSubmitting(true);
+  //   setErr(null);
+
+  //   try {
+  //     const payload = buildPayload();
+
+  //     await api.post(`/attempts/submit/${attemptId}`, {
+  //       answers: payload,
+  //     });
+
+  //     toast.success(
+  //       auto ? "Time ended. Exam submitted." : "Exam submitted successfully 🎉",
+  //     );
+
+  //     setTimeout(() => {
+  //       nav("/st/attempts");
+  //     }, 800);
+  //   } catch (e: any) {
+  //     toast.error(e?.response?.data?.message || "Submit failed ❌");
+  //     setErr(e?.response?.data?.message || "Submit failed");
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // };
+
   const handleSubmit = async (auto = false) => {
     if (!attemptId) return;
+    if (submitting) return;
 
     setSubmitting(true);
     setErr(null);
@@ -435,25 +464,25 @@ export default function StartExam() {
     try {
       const payload = buildPayload();
 
-      await api.post(`/attempts/submit/${attemptId}`, {
-        answers: payload,
-      });
+      await api.post(`/attempts/submit/${attemptId}`, { answers: payload });
+
+      // ✅ clear local draft + exit fullscreen after submit
+      clearDraft();
+      await exitFullscreen();
 
       toast.success(
         auto ? "Time ended. Exam submitted." : "Exam submitted successfully 🎉",
       );
 
-      setTimeout(() => {
-        nav("/st/attempts");
-      }, 800);
+      setTimeout(() => nav("/st/attempts"), 800);
     } catch (e: any) {
       toast.error(e?.response?.data?.message || "Submit failed ❌");
       setErr(e?.response?.data?.message || "Submit failed");
     } finally {
       setSubmitting(false);
+      setShowSubmitConfirm(false); // ✅ close modal as well
     }
   };
-
   // ---------- ui states ----------
   if (loading) {
     return (

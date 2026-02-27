@@ -11,7 +11,9 @@ export default function ExamDetails() {
   const { examId } = useParams();
 
   const [exam, setExam] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+
+  // ✅ use loading properly (no TS6133)
+  const [loading, setLoading] = useState(true);
   const [savingPublish, setSavingPublish] = useState(false);
 
   const [err, setErr] = useState<string | null>(null);
@@ -147,6 +149,9 @@ export default function ExamDetails() {
     if (!examId) return;
     if (!confirm("Delete this question?")) return;
 
+    setErr(null);
+    setOk(null);
+
     try {
       await api
         .delete(`/teacher/exams/${examId}/questions/${questionId}`)
@@ -229,197 +234,244 @@ export default function ExamDetails() {
       {err && <div className="alert alert-danger">{err}</div>}
       {ok && <div className="alert alert-success">{ok}</div>}
 
-      {/* ================= Publish ================= */}
-      <div className="row g-3 mb-3">
-        <div className="col-lg-5">
+      {/* ✅ Loading UI (uses loading state, fixes TS6133) */}
+      {loading && (
+        <div className="card shadow-sm mb-3">
+          <div className="card-body text-muted">Loading exam...</div>
+        </div>
+      )}
+
+      {!loading && (
+        <>
+          {/* ================= Publish ================= */}
+          <div className="row g-3 mb-3">
+            <div className="col-lg-5">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <div className="fw-semibold mb-2">Access</div>
+
+                  <div className="mb-2">
+                    <div className="small text-muted">Student Link</div>
+                    <div className="d-flex gap-2">
+                      <code className="flex-grow-1">{studentLink}</code>
+                      <CopyButton text={studentLink} />
+                    </div>
+                  </div>
+
+                  <div className="mb-3">
+                    <div className="small text-muted">Secret Key</div>
+                    <div className="d-flex gap-2">
+                      <code className="flex-grow-1">{exam?.secretKey}</code>
+                      {exam?.secretKey && <CopyButton text={exam.secretKey} />}
+                    </div>
+                  </div>
+
+                  <div className="form-check form-switch">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={isActiveLink}
+                      onChange={(e) => setIsActiveLink(e.target.checked)}
+                      disabled={savingPublish}
+                    />
+                    <label className="form-check-label">Active</label>
+                  </div>
+
+                  <div className="form-check form-switch mt-2">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      checked={allowRetake}
+                      onChange={(e) => setAllowRetake(e.target.checked)}
+                      disabled={savingPublish}
+                    />
+                    <label className="form-check-label">Allow Retake</label>
+                  </div>
+
+                  {/* Optional publish window UI (you already have states) */}
+                  <div className="row g-2 mt-3">
+                    <div className="col-6">
+                      <label className="form-label small text-muted mb-1">
+                        Starts At
+                      </label>
+                      <input
+                        type="datetime-local"
+                        className="form-control"
+                        value={startsAt}
+                        onChange={(e) => setStartsAt(e.target.value)}
+                        disabled={savingPublish}
+                      />
+                    </div>
+                    <div className="col-6">
+                      <label className="form-label small text-muted mb-1">
+                        Ends At
+                      </label>
+                      <input
+                        type="datetime-local"
+                        className="form-control"
+                        value={endsAt}
+                        onChange={(e) => setEndsAt(e.target.value)}
+                        disabled={savingPublish}
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={savePublishSettings}
+                    disabled={savingPublish}
+                  >
+                    {savingPublish ? "Saving..." : "Save"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* ================= Questions ================= */}
+            <div className="col-lg-7">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <div className="fw-semibold mb-2">
+                    Questions ({questions.length})
+                  </div>
+
+                  <table className="table">
+                    <thead>
+                      <tr>
+                        <th>Type</th>
+                        <th>Prompt</th>
+                        <th>Marks</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {questions.map((q: any) => (
+                        <tr key={q.id}>
+                          <td>{q.type}</td>
+                          <td
+                            className="text-truncate"
+                            style={{ maxWidth: 300 }}
+                          >
+                            {q.prompt}
+                          </td>
+                          <td>{q.marks}</td>
+                          <td className="text-end">
+                            <button
+                              className="btn btn-sm btn-danger"
+                              onClick={() => removeQuestion(q.id)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {questions.length === 0 && (
+                        <tr>
+                          <td colSpan={4} className="text-center text-muted">
+                            No questions
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ================= ADD ================= */}
           <div className="card shadow-sm">
             <div className="card-body">
-              <div className="fw-semibold mb-2">Access</div>
+              <div className="fw-semibold mb-2">Add Question</div>
 
               <div className="mb-2">
-                <div className="small text-muted">Student Link</div>
-                <div className="d-flex gap-2">
-                  <code className="flex-grow-1">{studentLink}</code>
-                  <CopyButton text={studentLink} />
-                </div>
+                <select
+                  className="form-select"
+                  value={qType}
+                  onChange={(e) => setQType(e.target.value as QType)}
+                >
+                  <option value="MCQ">MCQ</option>
+                  <option value="SHORT">SHORT</option>
+                </select>
               </div>
 
-              <div className="mb-3">
-                <div className="small text-muted">Secret Key</div>
-                <div className="d-flex gap-2">
-                  <code className="flex-grow-1">{exam?.secretKey}</code>
-                  {exam?.secretKey && <CopyButton text={exam.secretKey} />}
-                </div>
-              </div>
+              <textarea
+                className="form-control mb-2"
+                rows={3}
+                placeholder="Question..."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              />
 
-              <div className="form-check form-switch">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  checked={isActiveLink}
-                  onChange={(e) => setIsActiveLink(e.target.checked)}
+              <input
+                type="number"
+                className="form-control mb-2"
+                value={marks}
+                onChange={(e) => setMarks(Number(e.target.value))}
+              />
+
+              {qType === "MCQ" ? (
+                <>
+                  <input
+                    className="form-control mb-2"
+                    placeholder="Option A"
+                    value={optA}
+                    onChange={(e) => setOptA(e.target.value)}
+                  />
+                  <input
+                    className="form-control mb-2"
+                    placeholder="Option B"
+                    value={optB}
+                    onChange={(e) => setOptB(e.target.value)}
+                  />
+                  <input
+                    className="form-control mb-2"
+                    placeholder="Option C"
+                    value={optC}
+                    onChange={(e) => setOptC(e.target.value)}
+                  />
+                  <input
+                    className="form-control mb-2"
+                    placeholder="Option D"
+                    value={optD}
+                    onChange={(e) => setOptD(e.target.value)}
+                  />
+
+                  <select
+                    className="form-select mb-2"
+                    value={correct}
+                    onChange={(e) => setCorrect(e.target.value as any)}
+                  >
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+                  </select>
+                </>
+              ) : (
+                <textarea
+                  className="form-control mb-2"
+                  placeholder="Model answer"
+                  value={shortAnswer}
+                  onChange={(e) => setShortAnswer(e.target.value)}
                 />
-                <label className="form-check-label">Active</label>
-              </div>
+              )}
 
-              <div className="form-check form-switch mt-2">
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                  checked={allowRetake}
-                  onChange={(e) => setAllowRetake(e.target.checked)}
-                />
-                <label className="form-check-label">Allow Retake</label>
+              <div className="d-flex gap-2">
+                <button className="btn btn-primary" onClick={addQuestion}>
+                  Add
+                </button>
+                <button
+                  className="btn btn-outline-secondary"
+                  onClick={resetForm}
+                >
+                  Reset
+                </button>
               </div>
-
-              <button
-                className="btn btn-primary mt-3"
-                onClick={savePublishSettings}
-                disabled={savingPublish}
-              >
-                {savingPublish ? "Saving..." : "Save"}
-              </button>
             </div>
           </div>
-        </div>
-
-        {/* ================= Questions ================= */}
-        <div className="col-lg-7">
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <div className="fw-semibold mb-2">
-                Questions ({questions.length})
-              </div>
-
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Prompt</th>
-                    <th>Marks</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {questions.map((q: any) => (
-                    <tr key={q.id}>
-                      <td>{q.type}</td>
-                      <td className="text-truncate" style={{ maxWidth: 300 }}>
-                        {q.prompt}
-                      </td>
-                      <td>{q.marks}</td>
-                      <td className="text-end">
-                        <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => removeQuestion(q.id)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {questions.length === 0 && (
-                    <tr>
-                      <td colSpan={4} className="text-center text-muted">
-                        No questions
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ================= ADD ================= */}
-      <div className="card shadow-sm">
-        <div className="card-body">
-          <div className="fw-semibold mb-2">Add Question</div>
-
-          <div className="mb-2">
-            <select
-              className="form-select"
-              value={qType}
-              onChange={(e) => setQType(e.target.value as QType)}
-            >
-              <option value="MCQ">MCQ</option>
-              <option value="SHORT">SHORT</option>
-            </select>
-          </div>
-
-          <textarea
-            className="form-control mb-2"
-            rows={3}
-            placeholder="Question..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
-
-          <input
-            type="number"
-            className="form-control mb-2"
-            value={marks}
-            onChange={(e) => setMarks(Number(e.target.value))}
-          />
-
-          {qType === "MCQ" ? (
-            <>
-              <input
-                className="form-control mb-2"
-                placeholder="Option A"
-                value={optA}
-                onChange={(e) => setOptA(e.target.value)}
-              />
-              <input
-                className="form-control mb-2"
-                placeholder="Option B"
-                value={optB}
-                onChange={(e) => setOptB(e.target.value)}
-              />
-              <input
-                className="form-control mb-2"
-                placeholder="Option C"
-                value={optC}
-                onChange={(e) => setOptC(e.target.value)}
-              />
-              <input
-                className="form-control mb-2"
-                placeholder="Option D"
-                value={optD}
-                onChange={(e) => setOptD(e.target.value)}
-              />
-
-              <select
-                className="form-select mb-2"
-                value={correct}
-                onChange={(e) => setCorrect(e.target.value as any)}
-              >
-                <option>A</option>
-                <option>B</option>
-                <option>C</option>
-                <option>D</option>
-              </select>
-            </>
-          ) : (
-            <textarea
-              className="form-control mb-2"
-              placeholder="Model answer"
-              value={shortAnswer}
-              onChange={(e) => setShortAnswer(e.target.value)}
-            />
-          )}
-
-          <div className="d-flex gap-2">
-            <button className="btn btn-primary" onClick={addQuestion}>
-              Add
-            </button>
-            <button className="btn btn-outline-secondary" onClick={resetForm}>
-              Reset
-            </button>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 }
