@@ -7,7 +7,7 @@ export default function PendingApproval() {
       <div className="text-muted mb-3">
         Your teacher account is waiting for Super Admin approval.
       </div>
-      <Link to="/login" className="btn btn-outline-primary btn-sm">
+      <Link to="/login" className="btn lp-btn-primary btn-sm">
         Back to Login
       </Link>
     </div>

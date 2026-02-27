@@ -1,530 +1,644 @@
-// src/pages/public/Home.tsx
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
 import "./landing.css";
-const heroTiles = [
-  {
-    title: "AI Exam Generator",
-    desc: "Generate MCQ + Short questions from syllabus using ChatGPT or Gemini — switchable provider.",
-    color: "#1A2CA3",
-    img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1400&q=60",
-    icon: "🤖",
-  },
-  {
-    title: "Manual Question Builder",
-    desc: "Create questions manually with answers, marks, and publish rules — perfect for real classroom control.",
-    color: "#F49B13",
-    img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1400&q=60",
-    icon: "✍️",
-  },
-  {
-    title: "Instant & Review Results",
-    desc: "MCQ auto grading, short answer teacher grading — publish when ready. Retake & time control supported.",
-    color: "#00C6C6",
-    img: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1400&q=60",
-    icon: "📊",
-  },
-];
+import { Link } from "react-router-dom";
+import heroImage from "../../assets/banner.jpg";
 
-const features = [
-  {
-    title: "Role-based System",
-    icon: "🧩",
-    desc: "Super Admin, Teacher, Student modules with permissions & approvals.",
-  },
-  {
-    title: "Teacher Approval",
-    icon: "✅",
-    desc: "Teacher accounts require Super Admin approval before access.",
-  },
-  {
-    title: "Exam Access Control",
-    icon: "🔐",
-    desc: "Access via Link, Secret Key, or both. Activate/Deactivate anytime.",
-  },
-  {
-    title: "Timer & Expiry",
-    icon: "⏱️",
-    desc: "20 min, 1 hour or custom duration. Starts/Ends time window supported.",
-  },
-  {
-    title: "Retake Option",
-    icon: "🔁",
-    desc: "Teacher can allow retake and re-activate exam for selected students.",
-  },
-  {
-    title: "Email Delivery",
-    icon: "✉️",
-    desc: "Send exam link to students via Nodemailer directly from dashboard.",
-  },
-];
+// FontAwesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBrain,
+  faChartLine,
+  faUserShield,
+  faBolt,
+  faGraduationCap,
+  faClock,
+  faCheckCircle,
+  faEnvelope,
+  faArrowRight,
+  faShieldHalved,
+  faWandMagicSparkles,
+  faFileLines,
+  faCircleCheck,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  faFacebook,
+  faTwitter,
+  faLinkedin,
+  faGithub,
+} from "@fortawesome/free-brands-svg-icons";
 
-const workflowSteps = [
-  {
-    n: "01",
-    title: "Create Exam",
-    desc: "Teacher creates exam with mode: Manual / AI / Hybrid and duration settings.",
-  },
-  {
-    n: "02",
-    title: "Add Questions",
-    desc: "Manual builder or AI generation from syllabus. Edit before publishing.",
-  },
-  {
-    n: "03",
-    title: "Publish & Share",
-    desc: "Enable active link + secret key. Send to students by email.",
-  },
-  {
-    n: "04",
-    title: "Attempt & Results",
-    desc: "Students attempt with timer. MCQ auto result, manual grading for short.",
-  },
-];
+// AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
 
-const modules = [
-  {
-    title: "Super Admin",
-    points: [
-      "Approve teachers",
-      "Activate/deactivate users",
-      "Settings (AI provider default)",
-      "System monitoring",
-    ],
-  },
-  {
-    title: "Teacher",
-    points: [
-      "Create exams",
-      "Generate questions (AI/manual)",
-      "Review submissions",
-      "Manual grading & publish result",
-    ],
-  },
-  {
-    title: "Student",
-    points: [
-      "Join exam by link/secret",
-      "Attempt with timer",
-      "Instant MCQ result",
-      "View previous attempts & results",
-    ],
-  },
-];
+const Landing = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      easing: "ease-out-cubic",
+      once: true,
+      offset: 60,
+    });
+  }, []);
 
-const tech = [
-  { k: "Backend", v: "Node.js + Express + TypeScript" },
-  { k: "Database", v: "PostgreSQL + Prisma ORM" },
-  { k: "Frontend", v: "React + Bootstrap/Tabler UI" },
-  { k: "AI", v: "ChatGPT / Gemini (switchable)" },
-  { k: "Mobile", v: "Flutter app uses same REST API" },
-  { k: "Email", v: "Nodemailer" },
-];
+  const navLinks = [
+    { label: "Features", href: "#features" },
+    { label: "How it works", href: "#how" },
+    { label: "Testimonials", href: "#testimonials" },
+    { label: "FAQ", href: "#faq" },
+  ];
 
-export default function Landing() {
+  const topFeatures = [
+    {
+      icon: faWandMagicSparkles,
+      title: "Create Exam (Manual / AI)",
+      desc: "Teachers can create exams manually or generate using AI.",
+    },
+    {
+      icon: faUserShield,
+      title: "Role-Based Dashboard",
+      desc: "Separate dashboards for Super Admin, Teacher & Student.",
+    },
+    {
+      icon: faBolt,
+      title: "Auto Evaluation",
+      desc: "MCQ auto grading with real-time scoring.",
+    },
+    {
+      icon: faChartLine,
+      title: "Performance Analytics",
+      desc: "Track student progress and exam statistics.",
+    },
+  ];
+
+  const coreFeatures = [
+    {
+      icon: faBrain,
+      title: "AI Question Generation",
+      desc: "Generate MCQ, short, and descriptive questions via AI.",
+    },
+    {
+      icon: faFileLines,
+      title: "Manual Exam Builder",
+      desc: "Build structured exams with categories and marks.",
+    },
+    {
+      icon: faShieldHalved,
+      title: "Secure Online Exam",
+      desc: "Time controls + anti-cheat ready exam flow.",
+    },
+    {
+      icon: faCheckCircle,
+      title: "Instant Result System",
+      desc: "Auto results for MCQ with real-time scoring.",
+    },
+    {
+      icon: faGraduationCap,
+      title: "Teacher Tools",
+      desc: "Assign exams, monitor submissions, export reports.",
+    },
+    {
+      icon: faChartLine,
+      title: "Reports & Insights",
+      desc: "Analytics dashboards for students & institutions.",
+    },
+  ];
+
+  const trustedBy = ["School", "College", "University", "Coaching", "EdTech"];
+
+  const howItWorks = [
+    {
+      icon: faWandMagicSparkles,
+      title: "Step 1: Create Exam",
+      desc: "Teacher creates exam manually or using AI.",
+    },
+    {
+      icon: faUserShield,
+      title: "Step 2: Assign to Students",
+      desc: "Students receive exam via their dashboard.",
+    },
+    {
+      icon: faClock,
+      title: "Step 3: Attempt Online",
+      desc: "Students attempt within a set time limit.",
+    },
+    {
+      icon: faCircleCheck,
+      title: "Step 4: Instant Result",
+      desc: "System evaluates and publishes results instantly.",
+    },
+  ];
+
+  const testimonials = [
+    {
+      name: "Professor Rahman",
+      role: "University Teacher",
+      text: "AI question generation saves me hours of preparation time.",
+    },
+    {
+      name: "Nusrat Ahmed",
+      role: "School Principal",
+      text: "Instant results and analytics improved our exam process significantly.",
+    },
+    {
+      name: "Tanvir Hasan",
+      role: "Student",
+      text: "Online exams are smooth and results are immediate.",
+    },
+  ];
+
+  const faqs = [
+    {
+      q: "Can teachers generate questions using AI?",
+      a: "Yes. Teachers can generate MCQ, short, and descriptive questions using AI integration.",
+    },
+    {
+      q: "Does the system support role-based access?",
+      a: "Yes. Separate dashboards for Superadmin, Teacher, and Student.",
+    },
+    {
+      q: "Are results generated automatically?",
+      a: "MCQ exams are automatically graded and results are shown instantly.",
+    },
+    {
+      q: "Is the exam time controlled?",
+      a: "Yes. Each exam can have a specific time limit and submission control.",
+    },
+  ];
+
   return (
-    <div className="bg-white">
-      {/* Top Bar */}
-      <div className="border-bottom">
-        <div className="container py-2 d-flex align-items-center justify-content-between">
-          <div className="small text-muted d-flex flex-wrap gap-3">
-            <span>Edu Ai Exam System — Final Year Thesis</span>
-            <span className="d-none d-md-inline">
-              Role-based • AI + Manual • Instant Result
-            </span>
-          </div>
-          <div className="d-flex gap-2">
-            <Link to="/login" className="btn btn-outline-primary btn-sm">
-              Login
-            </Link>
-            <Link to="/register/student" className="btn btn-primary btn-sm">
-              Register Student
-            </Link>
-          </div>
-        </div>
-      </div>
+    <div className="lp">
+      {/* NAVBAR */}
+      <nav className="navbar navbar-expand-lg lp-nav">
+        <div className="container">
+          <a className="navbar-brand fw-bold lp-logo" href="#!">
+            <span className="lp-logo-dot" /> Edu AI Exam
+          </a>
 
-      {/* Navbar */}
-      <header className="sticky-top bg-white">
-        <div className="container py-3 d-flex align-items-center justify-content-between">
-          <div className="d-flex align-items-center gap-2">
-            <div
-              className="rounded-circle bg-primary"
-              style={{ width: 34, height: 34 }}
-            />
-            <div>
-              <div className="fw-bold lh-1">Edu Ai</div>
-              <div className="text-muted small">AI + Manual Exam Generator</div>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#lpNav"
+            aria-controls="lpNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
+
+          <div className="collapse navbar-collapse" id="lpNav">
+            <ul className="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
+              {navLinks.map((l) => (
+                <li className="nav-item" key={l.href}>
+                  <a className="nav-link lp-navlink" href={l.href}>
+                    {l.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+            <div className="d-flex gap-2">
+              <Link to="/login" className="btn lp-btn-ghost">
+                Sign in
+              </Link>
+
+              <Link to="/register/teacher" className="btn lp-btn-primary">
+                Teacher Apply{" "}
+                <FontAwesomeIcon icon={faArrowRight} className="ms-2" />
+              </Link>
             </div>
           </div>
-
-          <nav className="d-none d-lg-flex gap-4 fw-semibold">
-            <a className="text-decoration-none text-dark" href="#features">
-              Features
-            </a>
-            <a className="text-decoration-none text-dark" href="#workflow">
-              Workflow
-            </a>
-            <a className="text-decoration-none text-dark" href="#modules">
-              Modules
-            </a>
-            <a className="text-decoration-none text-dark" href="#tech">
-              Tech Stack
-            </a>
-            <a className="text-decoration-none text-dark" href="#screens">
-              Screens
-            </a>
-          </nav>
-
-          <div className="d-flex gap-2">
-            <Link
-              to="/register/teacher"
-              className="btn btn-outline-secondary btn-sm"
-            >
-              Teacher Apply
-            </Link>
-            <a href="#demo" className="btn btn-primary btn-sm">
-              View Demo
-            </a>
-          </div>
         </div>
-      </header>
+      </nav>
 
-      {/* Hero Tiles like eSmarts */}
-      <section className="container-fluid px-0">
-        <div className="row g-0">
-          {heroTiles.map((t) => (
-            <div key={t.title} className="col-12 col-lg-4">
-              <div className="d-flex flex-column" style={{ height: 520 }}>
-                {/* IMAGE */}
-                <div style={{ height: "55%" }}>
+      {/* HERO */}
+      <header className="lp-hero">
+        <div className="container">
+          <div className="row align-items-center g-4">
+            <div className="col-lg-6" data-aos="fade-right">
+              <p className="lp-badge">
+                <span className="lp-badge-dot" />
+                AI Exam • Instant Evaluation • Role-Based Access
+              </p>
+
+              <h1 className="lp-title">
+                Smart AI-Powered <br />
+                Exam Management System <br />
+                <span>Instant Results. Zero Hassle.</span>
+              </h1>
+
+              <p className="lp-subtitle">
+                Create exams manually or using AI (ChatGPT / Gemini), evaluate
+                instantly, and manage students, teachers, and admins in one
+                powerful platform.
+              </p>
+
+              <div className="d-flex flex-wrap gap-2 mt-4">
+                <Link
+                  to="/register/student"
+                  className="btn lp-btn-primary px-4"
+                >
+                  Get started{" "}
+                  <FontAwesomeIcon icon={faArrowRight} className="ms-2" />
+                </Link>
+
+                <a className="btn lp-btn-outline px-4" href="#how">
+                  How it works
+                </a>
+              </div>
+
+              <div className="lp-hero-meta mt-4">
+                <div
+                  className="lp-meta-item"
+                  data-aos="zoom-in"
+                  data-aos-delay="100"
+                >
+                  <div className="lp-meta-ico">
+                    <FontAwesomeIcon icon={faBrain} />
+                  </div>
+                  <div>
+                    <div className="fw-semibold">AI Question Generator</div>
+                    <div className="text-muted small">
+                      Generate MCQ, short & descriptive
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  className="lp-meta-item"
+                  data-aos="zoom-in"
+                  data-aos-delay="180"
+                >
+                  <div className="lp-meta-ico">
+                    <FontAwesomeIcon icon={faBolt} />
+                  </div>
+                  <div>
+                    <div className="fw-semibold">Instant Auto Result</div>
+                    <div className="text-muted small">
+                      Students get results immediately
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* HERO IMAGE */}
+            <div className="col-lg-6" data-aos="fade-left">
+              <div className="lp-hero-art">
+                <div className="lp-hero-art-inner">
                   <img
-                    src={t.img}
-                    alt={t.title}
-                    className="w-100 h-100"
-                    style={{ objectFit: "cover" }}
+                    src={heroImage}
+                    alt="Edu AI Exam System"
+                    className="lp-hero-img img-fluid"
                   />
                 </div>
 
-                {/* COLOR */}
                 <div
-                  className="flex-grow-1 text-white d-flex align-items-start"
-                  style={{ backgroundColor: t.color }}
+                  className="lp-float-card lp-float-1"
+                  data-aos="zoom-in"
+                  data-aos-delay="200"
                 >
-                  <div className="p-5">
-                    <div className="d-flex align-items-start gap-3">
-                      {/* ICON */}
-                      <div className="fs-1">{t.icon}</div>
-
-                      {/* TEXT */}
-                      <div>
-                        <h2 className="fw-bold mb-3" style={{ fontSize: 34 }}>
-                          {t.title}
-                        </h2>
-                        <p className="mb-0 opacity-75">{t.desc}</p>
-                      </div>
-                    </div>
-                  </div>
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    className="me-2 lp-float-ico"
+                  />
+                  <span>Instant Result</span>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
-      {/* Features */}
-      <section id="features" className="container py-5">
-        <div className="text-center mb-4">
-          <div className="text-muted small">Why This Project</div>
-          <div className="display-6 fw-bold">Smart Exam Management with AI</div>
-          <p className="text-muted mt-3 mx-auto" style={{ maxWidth: 820 }}>
-            This system supports both AI-generated and manual exams, providing
-            secure access, timed attempts, instant results for MCQ, and
-            teacher-controlled publishing.
-          </p>
-        </div>
-
-        <div className="row g-4">
-          {features.map((f) => (
-            <div key={f.title} className="col-12 col-md-6 col-lg-4">
-              <div className="card shadow-sm h-100">
-                <div className="card-body">
-                  <div className="d-flex gap-3">
-                    <div
-                      className="rounded-circle border d-flex align-items-center justify-content-center"
-                      style={{ width: 46, height: 46 }}
-                    >
-                      <span style={{ fontSize: 20 }}>{f.icon}</span>
-                    </div>
-                    <div>
-                      <div className="fw-bold">{f.title}</div>
-                      <div className="text-muted small mt-1">{f.desc}</div>
-                    </div>
-                  </div>
+                <div
+                  className="lp-float-card lp-float-2"
+                  data-aos="zoom-in"
+                  data-aos-delay="300"
+                >
+                  <FontAwesomeIcon
+                    icon={faUserShield}
+                    className="me-2 lp-float-ico"
+                  />
+                  <span>Role Based</span>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Workflow band */}
-      <section id="workflow" className="py-5" style={{ background: "#12c6c0" }}>
-        <div className="container">
-          <div className="row g-4 align-items-center">
-            <div className="col-12 col-lg-5 text-white">
-              <div className="text-white-50 small">How it Works</div>
-              <div className="h2 fw-bold mb-2">
-                From Syllabus to Result — End to End
-              </div>
-              <p className="mb-4 text-white-50">
-                Teachers generate exams with AI or manual input, publish links,
-                and students attempt with a timer. Manual grading is supported
-                for short answers.
-              </p>
-
-              <div className="d-flex gap-2">
-                <a href="#demo" className="btn btn-light">
-                  Watch Demo
-                </a>
-                <Link to="/login" className="btn btn-outline-light">
-                  Open Dashboard
-                </Link>
-              </div>
-            </div>
-
-            <div className="col-12 col-lg-7">
-              <div className="row g-3">
-                {workflowSteps.map((s) => (
-                  <div key={s.n} className="col-12 col-md-6">
-                    <div className="bg-white rounded-3 p-3 shadow-sm h-100">
-                      <div className="d-flex align-items-center gap-2">
-                        <span className="badge bg-primary">{s.n}</span>
-                        <div className="fw-bold">{s.title}</div>
-                      </div>
-                      <div className="text-muted small mt-2">{s.desc}</div>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Modules */}
-      <section id="modules" className="container py-5">
-        <div className="text-center mb-4">
-          <div className="text-muted small">Role Based</div>
-          <div className="display-6 fw-bold">Modules</div>
-          <p className="text-muted mt-3 mx-auto" style={{ maxWidth: 820 }}>
-            Each role has dedicated dashboards and permissions to keep the
-            system secure and organized.
-          </p>
-        </div>
-
-        <div className="row g-4">
-          {modules.map((m) => (
-            <div key={m.title} className="col-12 col-lg-4">
-              <div className="card shadow-sm h-100">
-                <div className="card-body">
-                  <div className="fw-bold h4">{m.title}</div>
-                  <ul className="text-muted mt-3 mb-0">
-                    {m.points.map((p) => (
-                      <li key={p} className="mb-1">
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
+          {/* TOP FEATURES */}
+          <section id="features" className="lp-feature-row">
+            <div className="row g-3">
+              {topFeatures.map((f, i) => (
+                <div
+                  className="col-12 col-md-6 col-lg-3"
+                  key={i}
+                  data-aos="fade-up"
+                  data-aos-delay={i * 90}
+                >
+                  <div className="lp-card lp-hover-card">
+                    <div className="lp-icon lp-icon-animated">
+                      <FontAwesomeIcon icon={f.icon} />
+                    </div>
+                    <h6 className="mt-3 mb-1 fw-semibold">{f.title}</h6>
+                    <p className="mb-0 text-muted small">{f.desc}</p>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
+          </section>
         </div>
-      </section>
+      </header>
 
-      {/* Tech Stack */}
-      <section id="tech" className="container pb-5">
-        <div className="row g-4 align-items-start">
-          <div className="col-12 col-lg-6">
-            <div className="text-muted small">Implementation</div>
-            <div className="h2 fw-bold">Tech Stack</div>
-            <p className="text-muted mt-2">
-              Built for real deployment: secure auth, PostgreSQL, Prisma, and
-              scalable REST APIs usable by Flutter.
+      {/* CORE FEATURES */}
+      <section className="lp-section">
+        <div className="container">
+          <div className="text-center mb-4" data-aos="fade-up">
+            <h2 className="lp-h2">Our Core Features</h2>
+            <p className="text-muted mb-0">
+              Everything you need to manage exams digitally.
             </p>
-
-            <div className="d-flex gap-2 mt-3">
-              <a className="btn btn-primary" href="#demo">
-                Project Demo
-              </a>
-              <a className="btn btn-outline-secondary" href="#screens">
-                Screenshots
-              </a>
-            </div>
           </div>
 
-          <div className="col-12 col-lg-6">
-            <div className="card shadow-sm">
-              <div className="card-body">
-                {tech.map((t) => (
-                  <div
-                    key={t.k}
-                    className="d-flex justify-content-between py-2 border-bottom"
-                  >
-                    <div className="fw-semibold">{t.k}</div>
-                    <div className="text-muted">{t.v}</div>
-                  </div>
-                ))}
-                <div className="small text-muted mt-3">
-                  AI Providers: switch at exam-level or system default.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Screens section */}
-      <section id="screens" className="container pb-5">
-        <div className="text-center mb-4">
-          <div className="text-muted small">UI Preview</div>
-          <div className="display-6 fw-bold">Screens</div>
-          <p className="text-muted mt-3 mx-auto" style={{ maxWidth: 820 }}>
-            Add your real screenshots here (Teacher dashboard, Create exam, AI
-            generator, Student attempt, Results).
-          </p>
-        </div>
-
-        <div className="row g-3">
-          {[
-            "Teacher Dashboard",
-            "Create Exam",
-            "AI Generator",
-            "Student Attempt",
-            "Results",
-            "Admin Approvals",
-          ].map((title) => (
-            <div key={title} className="col-12 col-md-6 col-lg-4">
-              <div className="card shadow-sm h-100">
+          <div
+            className="lp-services-wrap"
+            data-aos="fade-up"
+            data-aos-delay="120"
+          >
+            <div className="row g-3">
+              {coreFeatures.map((s, i) => (
                 <div
-                  className="bg-light"
-                  style={{
-                    height: 180,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+                  className="col-12 col-md-6 col-lg-4"
+                  key={i}
+                  data-aos="fade-up"
+                  data-aos-delay={i * 70}
                 >
-                  <span className="text-muted small">
-                    Screenshot Placeholder
-                  </span>
-                </div>
-                <div className="card-body">
-                  <div className="fw-bold">{title}</div>
-                  <div className="text-muted small mt-1">
-                    Replace with your real UI image from your project.
+                  <div className="lp-service-card lp-hover-card">
+                    <div className="lp-service-icon lp-icon-animated">
+                      <FontAwesomeIcon icon={s.icon} />
+                    </div>
+                    <h6 className="mt-3 mb-1 fw-semibold">{s.title}</h6>
+                    <p className="mb-0 text-muted small">{s.desc}</p>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* TRUSTED */}
+          <div className="lp-trusted mt-5" data-aos="fade-up">
+            <p className="text-muted small mb-2 text-center">
+              Built for Schools, Colleges & Universities
+            </p>
+            <div className="lp-logos">
+              {trustedBy.map((x, idx) => (
+                <div
+                  className="lp-logo-pill"
+                  key={x}
+                  data-aos="zoom-in"
+                  data-aos-delay={idx * 70}
+                >
+                  {x}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Demo / CTA */}
-      {/* <section id="demo" className="py-5 border-top">
+      {/* HOW IT WORKS */}
+      <section id="how" className="lp-section lp-soft">
         <div className="container">
-          <div className="row g-4 align-items-center">
-            <div className="col-12 col-lg-7">
-              <div className="h2 fw-bold">
-                Ready to Present This Thesis Project?
+          <div className="text-center mb-4" data-aos="fade-up">
+            <h2 className="lp-h2">How Edu AI Exam Works</h2>
+            <p className="text-muted mb-0">
+              Create, Assign, Attempt, and Evaluate in Minutes.
+            </p>
+          </div>
+
+          <div className="row g-3">
+            {howItWorks.map((t, i) => (
+              <div
+                className="col-12 col-lg-6"
+                key={i}
+                data-aos="fade-up"
+                data-aos-delay={i * 80}
+              >
+                <div className="lp-step-card lp-hover-card">
+                  <div className="lp-step-illu lp-icon-animated">
+                    <FontAwesomeIcon icon={t.icon} />
+                  </div>
+                  <div>
+                    <h6 className="mb-1 fw-semibold">{t.title}</h6>
+                    <p className="mb-0 text-muted small">{t.desc}</p>
+                  </div>
+                </div>
               </div>
-              <p className="text-muted mt-2">
-                Use this landing page to explain your project to supervisors,
-                judges, or university visitors. Add demo video link and
-                screenshots, and you’re ready.
+            ))}
+          </div>
+
+          {/* CTA STRIP */}
+          <div className="lp-cta mt-5" data-aos="zoom-in">
+            <div>
+              <h3 className="mb-1">
+                Transform Your Institution with AI-Based Exams
+              </h3>
+              <p className="mb-0">
+                Save time, reduce manual grading, and improve accuracy.
               </p>
             </div>
-            <div className="col-12 col-lg-5">
-              <div className="d-flex gap-2 justify-content-lg-end">
-                <Link to="/login" className="btn btn-primary">
-                  Open Dashboard
-                </Link>
-                <Link
-                  to="/register/teacher"
-                  className="btn btn-outline-secondary"
-                >
-                  Teacher Apply
-                </Link>
+            <Link to="/register/teacher" className="btn lp-btn-primary px-4">
+              Start Free Demo{" "}
+              <FontAwesomeIcon icon={faArrowRight} className="ms-2" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section id="testimonials" className="lp-section">
+        <div className="container">
+          <div className="text-center mb-4" data-aos="fade-up">
+            <h2 className="lp-h2">What people are saying</h2>
+            <p className="text-muted mb-0">
+              Feedback from teachers, institutions, and students.
+            </p>
+          </div>
+
+          <div className="row g-3">
+            {testimonials.map((r, i) => (
+              <div
+                className="col-12 col-md-6 col-lg-4"
+                key={i}
+                data-aos="fade-up"
+                data-aos-delay={i * 90}
+              >
+                <div className="lp-testimonial lp-hover-card">
+                  <div className="lp-avatar">
+                    <span>{r.name?.slice(0, 1) || "U"}</span>
+                  </div>
+                  <div>
+                    <p className="mb-2">{r.text}</p>
+                    <div className="fw-semibold">{r.name}</div>
+                    <div className="text-muted small">{r.role}</div>
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" className="lp-section lp-soft">
+        <div className="container">
+          <div className="text-center mb-4" data-aos="fade-up">
+            <h2 className="lp-h2">Frequently Asked Questions</h2>
+            <p className="text-muted mb-0">
+              Quick answers to common questions.
+            </p>
+          </div>
+
+          <div className="lp-faq" data-aos="fade-up" data-aos-delay="120">
+            <div className="accordion lp-accordion" id="lpFaq">
+              {faqs.map((item, idx) => (
+                <div className="accordion-item" key={idx}>
+                  <h2 className="accordion-header" id={`h${idx}`}>
+                    <button
+                      className={`accordion-button ${idx !== 0 ? "collapsed" : ""}`}
+                      type="button"
+                      data-bs-toggle="collapse"
+                      data-bs-target={`#c${idx}`}
+                      aria-expanded={idx === 0 ? "true" : "false"}
+                      aria-controls={`c${idx}`}
+                    >
+                      {item.q}
+                    </button>
+                  </h2>
+                  <div
+                    id={`c${idx}`}
+                    className={`accordion-collapse collapse ${idx === 0 ? "show" : ""}`}
+                    aria-labelledby={`h${idx}`}
+                    data-bs-parent="#lpFaq"
+                  >
+                    <div className="accordion-body text-muted">{item.a}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="d-flex justify-content-center mt-3">
+              <Link to="/register/student" className="btn lp-btn-primary px-4">
+                Get Started{" "}
+                <FontAwesomeIcon icon={faArrowRight} className="ms-2" />
+              </Link>
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
 
-      {/* Footer */}
-      <footer className="bg-dark text-white pt-5 pb-4">
+      {/* FOOTER */}
+      <footer className="lp-footer">
         <div className="container">
           <div className="row g-4">
-            <div className="col-12 col-lg-5">
-              <div className="fw-bold mb-2">ExamAI — Final Year Thesis</div>
-              <p className="text-white-50 small mb-0">
-                AI + Manual Exam Generator System with role-based dashboards,
-                timed attempts, instant MCQ results and teacher-controlled
-                publishing.
+            <div className="col-lg-4" data-aos="fade-up">
+              <div className="fw-bold mb-2">Edu AI Exam System</div>
+              <p className="lp-footer-text">
+                A modern AI-powered exam management system built with React,
+                Node.js, TypeScript, PostgreSQL & Prisma.
               </p>
+
+              <div className="lp-mini-list">
+                <div className="lp-mini">
+                  <FontAwesomeIcon icon={faCheckCircle} className="me-2" />
+                  AI + Manual Exam Builder
+                </div>
+                <div className="lp-mini">
+                  <FontAwesomeIcon icon={faCheckCircle} className="me-2" />
+                  Role-Based Dashboard
+                </div>
+                <div className="lp-mini">
+                  <FontAwesomeIcon icon={faCheckCircle} className="me-2" />
+                  Instant Result & Analytics
+                </div>
+              </div>
             </div>
 
-            <div className="col-6 col-lg-3">
-              <div className="fw-bold mb-2">Quick Links</div>
-              <ul className="list-unstyled small text-white-50 mb-0">
+            <div
+              className="col-6 col-lg-2"
+              data-aos="fade-up"
+              data-aos-delay="80"
+            >
+              <div className="fw-semibold mb-2">Company</div>
+              <ul className="lp-footer-links">
                 <li>
-                  <a
-                    className="text-white-50 text-decoration-none"
-                    href="#features"
-                  >
-                    Features
-                  </a>
+                  <a href="#!">About</a>
                 </li>
                 <li>
-                  <a
-                    className="text-white-50 text-decoration-none"
-                    href="#modules"
-                  >
-                    Modules
-                  </a>
+                  <a href="#!">Contact</a>
                 </li>
                 <li>
-                  <a
-                    className="text-white-50 text-decoration-none"
-                    href="#tech"
-                  >
-                    Tech Stack
-                  </a>
+                  <a href="#!">Support</a>
                 </li>
               </ul>
             </div>
 
-            <div className="col-6 col-lg-4">
-              <div className="fw-bold mb-2">Contact</div>
-              <div className="text-white-50 small">
-                Email: yourmail@example.com
+            <div
+              className="col-6 col-lg-2"
+              data-aos="fade-up"
+              data-aos-delay="140"
+            >
+              <div className="fw-semibold mb-2">Product</div>
+              <ul className="lp-footer-links">
+                <li>
+                  <a href="#features">Features</a>
+                </li>
+                <li>
+                  <a href="#how">How it works</a>
+                </li>
+                <li>
+                  <a href="#faq">FAQ</a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+              <div className="fw-semibold mb-2">Stay updated</div>
+              <div className="d-flex gap-2">
+                <div className="lp-input-icon">
+                  <FontAwesomeIcon icon={faEnvelope} />
+                </div>
+                <input
+                  className="form-control lp-input"
+                  placeholder="Email address"
+                />
+                <button className="btn lp-btn-primary">Join</button>
               </div>
-              <div className="text-white-50 small">
-                University: Dhaka International University
+
+              <div className="lp-social mt-3">
+                <a href="#!" aria-label="Facebook">
+                  <FontAwesomeIcon icon={faFacebook} />
+                </a>
+                <a href="#!" aria-label="Twitter">
+                  <FontAwesomeIcon icon={faTwitter} />
+                </a>
+                <a href="#!" aria-label="LinkedIn">
+                  <FontAwesomeIcon icon={faLinkedin} />
+                </a>
+                <a href="#!" aria-label="GitHub">
+                  <FontAwesomeIcon icon={faGithub} />
+                </a>
               </div>
             </div>
           </div>
 
-          <hr className="border-secondary my-4" />
-          <div className="d-flex justify-content-between align-items-center small text-white-50">
-            <div>© {new Date().getFullYear()} ExamAI. All rights reserved.</div>
-            <div>Built with Node, Prisma, React & AI</div>
+          <hr className="lp-hr" />
+          <div className="d-flex flex-wrap justify-content-between text-muted small">
+            <span>
+              © {new Date().getFullYear()} Edu AI Exam System. All rights
+              reserved.
+            </span>
+            <span>Privacy • Terms</span>
           </div>
         </div>
       </footer>
     </div>
   );
-}
+};
 
-/* Minimal theme helpers (same file is ok, but better put in global css) */
+export default Landing;

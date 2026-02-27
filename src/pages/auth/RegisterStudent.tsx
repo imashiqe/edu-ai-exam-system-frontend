@@ -72,7 +72,7 @@ export default function RegisterStudent() {
           required
         />
 
-        <button className="btn btn-primary" disabled={loading}>
+        <button className="btn lp-btn-primary" disabled={loading}>
           {loading ? "Creating..." : "Create account"}
         </button>
       </form>

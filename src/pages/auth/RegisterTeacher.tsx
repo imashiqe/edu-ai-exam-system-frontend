@@ -78,7 +78,7 @@ export default function RegisterTeacher() {
           required
         />
 
-        <button className="btn btn-primary" disabled={loading}>
+        <button className="btn lp-btn-primary" disabled={loading}>
           {loading ? "Submitting..." : "Submit for approval"}
         </button>
       </form>
