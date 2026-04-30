@@ -105,7 +105,6 @@ export default function CreateExam() {
                 placeholder="e.g. Mid Term - CSE 305"
               />
             </div>
-
             <div className="col-12 col-md-6">
               <label className="form-label">Duration (minutes)</label>
               <input
@@ -113,10 +112,16 @@ export default function CreateExam() {
                 className="form-control"
                 value={form.durationMinutes}
                 min={1}
-                onChange={(e) => set("durationMinutes", Number(e.target.value))}
+                // onChange={(e) => set("durationMinutes", Number(e.target.value))}
+                onChange={(e) =>
+                  set(
+                    "durationMinutes",
+                    e.target.value === "" ? "" : Number(e.target.value),
+                  )
+                }
               />
             </div>
-
+            value={form.durationMinutes ?? ""}
             <div className="col-12">
               <label className="form-label">Instructions</label>
               <textarea
@@ -127,7 +132,6 @@ export default function CreateExam() {
                 placeholder="Optional instructions for students"
               />
             </div>
-
             <div className="col-12 col-md-4">
               <label className="form-label">Mode</label>
               <select
@@ -144,7 +148,6 @@ export default function CreateExam() {
                 <option value="HYBRID">Hybrid</option>
               </select>
             </div>
-
             <div className="col-12 col-md-4">
               <label className="form-label">AI Provider</label>
               <select
@@ -163,7 +166,6 @@ export default function CreateExam() {
                 </div>
               )}
             </div>
-
             <div className="col-12 col-md-4">
               <label className="form-label">Access Type</label>
               <select

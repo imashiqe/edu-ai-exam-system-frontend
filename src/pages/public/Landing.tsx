@@ -131,7 +131,7 @@ const Landing = () => {
 
   const testimonials = [
     {
-      name: "Professor Rahman",
+      name: " Dr. Professor Abdul Based",
       role: "University Teacher",
       text: "AI question generation saves me hours of preparation time.",
     },
@@ -141,7 +141,7 @@ const Landing = () => {
       text: "Instant results and analytics improved our exam process significantly.",
     },
     {
-      name: "Tanvir Hasan",
+      name: "Ashiqur Rahman",
       role: "Student",
       text: "Online exams are smooth and results are immediate.",
     },
@@ -224,8 +224,8 @@ const Landing = () => {
 
               <h1 className="lp-title">
                 Smart AI-Powered <br />
-                Exam Management System <br />
-                <span>Instant Results. Zero Hassle.</span>
+                Examination System <br />
+                <span> Zero Hassle</span>
               </h1>
 
               <p className="lp-subtitle">
