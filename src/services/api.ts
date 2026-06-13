@@ -1,6 +1,10 @@
 import axios from "axios";
 import { getToken, clearAuth } from "../utils/storage";
 
+// export const api = axios.create({
+//   baseURL: "https://api.eduaiexam.online/api/v1",
+// });
+
 export const api = axios.create({
   baseURL: "http://localhost:5000/api/v1",
 });
