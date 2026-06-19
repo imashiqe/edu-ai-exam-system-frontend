@@ -5,10 +5,12 @@ import PageHeader from "../../components/ui/PageHeader";
 import { api } from "../../services/api";
 import { getUser } from "../../utils/storage";
 import { toast } from "react-toastify";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import Webcam from "react-webcam";
 
 type Question = {
   id: string;
-  type: "MCQ" | "SHORT";
+  type: "MCQ" | "SHORT" | "DESCRIPTIVE";
   prompt: string;
   options?: any; // JSON object like {A:"..",B:".."} OR array
   marks: number;
@@ -35,6 +37,7 @@ function formatTime(sec: number) {
 }
 
 export default function StartExam() {
+  const [fingerprint, setFingerprint] = useState("");
   const { examId } = useParams();
   const nav = useNavigate();
   const user = getUser();
@@ -126,7 +129,21 @@ export default function StartExam() {
       // browser may block; ignore
     }
   };
+  // finger
+  useEffect(() => {
+    const loadFingerprint = async () => {
+      try {
+        const fp = await FingerprintJS.load();
+        const result = await fp.get();
 
+        setFingerprint(result.visitorId);
+      } catch (error) {
+        console.error("Fingerprint Error:", error);
+      }
+    };
+
+    loadFingerprint();
+  }, []);
   // ---------- build payload ----------
   const questions = exam?.questions || [];
 
@@ -212,7 +229,9 @@ export default function StartExam() {
           setAttemptId(draft.attemptId);
           setStartedAt(new Date(draft.startedAt));
         } else {
-          const startRes = await api.post(`/attempts/start/${examId}`);
+          const startRes = await api.post(`/attempts/start/${examId}`, {
+            fingerprint,
+          });
           const id =
             startRes.data.attemptId ||
             startRes.data.id ||
@@ -394,6 +413,80 @@ export default function StartExam() {
     })();
   }, [isOnline, attemptId]);
 
+  useEffect(() => {
+    const prevent = (e: any) => {
+      e.preventDefault();
+      toast.warn("Copy/Paste disabled");
+    };
+
+    document.addEventListener("copy", prevent);
+    document.addEventListener("paste", prevent);
+    document.addEventListener("cut", prevent);
+
+    return () => {
+      document.removeEventListener("copy", prevent);
+      document.removeEventListener("paste", prevent);
+      document.removeEventListener("cut", prevent);
+    };
+  }, []);
+
+  useEffect(() => {
+    const prevent = (e: MouseEvent) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener("contextmenu", prevent);
+
+    return () => {
+      document.removeEventListener("contextmenu", prevent);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handler = () => {
+      if (!document.fullscreenElement) {
+        setTabWarnings((p) => p + 1);
+
+        toast.error("Fullscreen exited");
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handler);
+
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  useEffect(() => {
+    if (tabWarnings >= 3) {
+      toast.error("Too many violations. Exam auto submitted.");
+
+      handleSubmit(true);
+    }
+  }, [tabWarnings]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && e.key === "I") ||
+        (e.ctrlKey && e.shiftKey && e.key === "J") ||
+        (e.ctrlKey && e.key === "U")
+      ) {
+        e.preventDefault();
+
+        toast.error("Developer tools disabled");
+      }
+    };
+
+    document.addEventListener("keydown", handler);
+
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+  // if (!document.fullscreenElement) {
+  //   setTabWarnings((p) => p + 1);
+
+  //   toast.error("Fullscreen exited. Warning recorded.");
+  // }
   // ---------- submit ----------
   // const handleSubmit = async (auto = false) => {
   //   if (!attemptId) return;
@@ -464,9 +557,11 @@ export default function StartExam() {
     try {
       const payload = buildPayload();
 
-      await api.post(`/attempts/submit/${attemptId}`, { answers: payload });
+      await api.post(`/attempts/submit/${attemptId}`, {
+        answers: payload,
+        fingerprint,
+      });
 
-      // ✅ clear local draft + exit fullscreen after submit
       clearDraft();
       await exitFullscreen();
 
@@ -474,7 +569,15 @@ export default function StartExam() {
         auto ? "Time ended. Exam submitted." : "Exam submitted successfully 🎉",
       );
 
-      setTimeout(() => nav("/st/attempts"), 800);
+      setTimeout(() => {
+        nav(`/st/results/${attemptId}`);
+      }, 800);
+
+      // ✅ clear local draft + exit fullscreen after submit
+
+      setTimeout(() => {
+        nav(`/st/results/${attemptId}`);
+      }, 800);
     } catch (e: any) {
       toast.error(e?.response?.data?.message || "Submit failed ❌");
       setErr(e?.response?.data?.message || "Submit failed");
@@ -487,7 +590,37 @@ export default function StartExam() {
   if (loading) {
     return (
       <>
+        <Webcam
+          audio={false}
+          width={180}
+          height={120}
+          screenshotFormat="image/jpeg"
+        />
         <PageHeader title="Exam Attempt" subtitle="Loading..." />
+        <div className="card shadow-sm mb-3">
+          <div className="card-body">
+            <div className="d-flex justify-content-between">
+              <span>Progress</span>
+
+              <span>
+                {progress.answered}/{progress.total}
+              </span>
+            </div>
+
+            <div className="progress mt-2">
+              <div
+                className="progress-bar"
+                style={{
+                  width: `${
+                    progress.total
+                      ? (progress.answered / progress.total) * 100
+                      : 0
+                  }%`,
+                }}
+              />
+            </div>
+          </div>
+        </div>
         <div className="card shadow-sm">
           <div className="card-body text-muted">Preparing exam...</div>
         </div>
@@ -670,8 +803,17 @@ export default function StartExam() {
                       value={answers[activeQuestion.id] ?? ""}
                       onChange={(v) => setMCQ(activeQuestion.id, v)}
                     />
-                  ) : (
+                  ) : activeQuestion.type === "SHORT" ? (
                     <ShortBlock
+                      value={
+                        typeof answers[activeQuestion.id] === "string"
+                          ? answers[activeQuestion.id]
+                          : ""
+                      }
+                      onChange={(v) => setShort(activeQuestion.id, v)}
+                    />
+                  ) : (
+                    <DescriptiveBlock
                       value={
                         typeof answers[activeQuestion.id] === "string"
                           ? answers[activeQuestion.id]
@@ -891,6 +1033,31 @@ function ShortBlock({
       />
       <div className="text-muted small mt-1">
         Write a short answer. Keep it clear and concise.
+      </div>
+    </div>
+  );
+}
+
+function DescriptiveBlock({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div>
+      <label className="form-label fw-bold">Descriptive Answer</label>
+
+      <textarea
+        className="form-control"
+        rows={12}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+
+      <div className="text-muted small mt-2">
+        Write a detailed explanation with examples.
       </div>
     </div>
   );

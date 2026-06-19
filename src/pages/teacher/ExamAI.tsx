@@ -4,7 +4,7 @@ import PageHeader from "../../components/ui/PageHeader";
 import { api } from "../../services/api";
 
 type GenQ = {
-  type: "MCQ" | "SHORT";
+  type: "MCQ" | "SHORT" | "DESCRIPTIVE";
   prompt: string;
   options?: any;
   correctAnswer: any;
@@ -19,9 +19,14 @@ export default function ExamAI() {
     "MEDIUM",
   );
   const [totalQuestions, setTotalQuestions] = useState(10);
-  const [types, setTypes] = useState<{ MCQ: boolean; SHORT: boolean }>({
+  const [types, setTypes] = useState<{
+    MCQ: boolean;
+    SHORT: boolean;
+    DESCRIPTIVE: boolean;
+  }>({
     MCQ: true,
     SHORT: false,
+    DESCRIPTIVE: false,
   });
 
   const [syllabusText, setSyllabusText] = useState("");
@@ -181,6 +186,21 @@ export default function ExamAI() {
                       />
                       <span className="form-check-label">Short</span>
                     </label>
+
+                    <label className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={types.DESCRIPTIVE}
+                        onChange={(e) =>
+                          setTypes((p) => ({
+                            ...p,
+                            DESCRIPTIVE: e.target.checked,
+                          }))
+                        }
+                      />
+                      <span className="form-check-label">Descriptive</span>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -264,7 +284,15 @@ export default function ExamAI() {
                       <div className="d-flex justify-content-between">
                         <div className="fw-semibold">
                           Q{idx + 1}{" "}
-                          <span className="badge bg-light text-dark ms-2">
+                          <span
+                            className={`badge ${
+                              q.type === "MCQ"
+                                ? "bg-primary"
+                                : q.type === "SHORT"
+                                  ? "bg-success"
+                                  : "bg-warning text-dark"
+                            }`}
+                          >
                             {q.type}
                           </span>
                         </div>
@@ -358,19 +386,23 @@ export default function ExamAI() {
                         </div>
                       )}
 
-                      {q.type === "SHORT" && (
+                      {(q.type === "SHORT" || q.type === "DESCRIPTIVE") && (
                         <div className="mt-2">
                           <label className="form-label">Model Answer</label>
                           <textarea
                             className="form-control"
-                            rows={2}
+                            rows={q.type === "DESCRIPTIVE" ? 6 : 2}
                             value={q.correctAnswer?.text || ""}
                             onChange={(e) => {
                               const v = e.target.value;
+
                               setGenerated((p) =>
                                 p.map((x, i) =>
                                   i === idx
-                                    ? { ...x, correctAnswer: { text: v } }
+                                    ? {
+                                        ...x,
+                                        correctAnswer: { text: v },
+                                      }
                                     : x,
                                 ),
                               );

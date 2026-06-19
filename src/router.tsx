@@ -5,7 +5,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import ProtectedRoute from "./guards/ProtectedRoute";
 import RoleRoute from "./guards/RoleRoute";
-
+import STResultDetails from "./pages/student/ResultDetails";
 // Auth pages
 import Login from "./pages/auth/Login";
 import RegisterStudent from "./pages/auth/RegisterStudent";
@@ -130,6 +130,7 @@ export const router = createBrowserRouter([
               { path: "/st/exams/:examId/start", element: <STStartExam /> },
               { path: "/st/attempts", element: <STAttempts /> },
               { path: "/st/results", element: <STResults /> },
+              { path: "/st/results/:attemptId", element: <STResultDetails /> },
             ],
           },
 

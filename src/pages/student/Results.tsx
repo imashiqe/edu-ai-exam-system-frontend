@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import PageHeader from "../../components/ui/PageHeader";
 import { api } from "../../services/api";
 import { toast } from "react-toastify";
@@ -9,6 +10,7 @@ export default function Results() {
 
   const load = async () => {
     setLoading(true);
+
     try {
       const res = await api.get("/student/results");
       setItems(res.data.results || []);
@@ -26,8 +28,8 @@ export default function Results() {
   return (
     <>
       <PageHeader
-        title="Results"
-        subtitle="Published results only."
+        title="My Results"
+        subtitle="Published exam results"
         right={
           <button className="btn btn-outline-primary btn-sm" onClick={load}>
             Refresh
@@ -35,35 +37,68 @@ export default function Results() {
         }
       />
 
-      <div className="card shadow-sm">
+      <div className="card border-0 shadow-sm">
         <div className="card-body">
           {loading ? (
-            <div className="text-muted">Loading...</div>
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" />
+            </div>
           ) : (
             <div className="table-responsive">
-              <table className="table align-middle">
-                <thead>
+              <table className="table table-hover align-middle">
+                <thead className="table-light">
                   <tr>
                     <th>Exam</th>
-                    <th>Score</th>
                     <th>Teacher</th>
+                    <th>Score</th>
+                    <th>Status</th>
                     <th>Retake</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {items.map((r) => (
                     <tr key={r.id}>
-                      <td>{r.exam?.title || "-"}</td>
-                      <td>{r.score ?? "-"}</td>
-                      <td>{r.exam?.teacher?.name ?? "-"}</td>
-                      <td>{r.retakeNo ?? 1}</td>
+                      <td>
+                        <div className="fw-semibold">
+                          {r.exam?.title || "-"}
+                        </div>
+                      </td>
+
+                      <td>{r.exam?.teacher?.name || "-"}</td>
+
+                      <td>
+                        <span className="badge bg-success fs-6">
+                          {r.score ?? 0}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span className="badge bg-primary">Published</span>
+                      </td>
+
+                      <td>
+                        <span className="badge bg-secondary">
+                          #{r.retakeNo ?? 1}
+                        </span>
+                      </td>
+
+                      <td>
+                        <Link
+                          to={`/st/results/${r.id}`}
+                          className="btn btn-sm btn-primary"
+                        >
+                          View Result
+                        </Link>
+                      </td>
                     </tr>
                   ))}
 
                   {items.length === 0 && (
                     <tr>
-                      <td colSpan={4} className="text-muted text-center py-4">
-                        No published results
+                      <td colSpan={6} className="text-center py-5 text-muted">
+                        No published results found
                       </td>
                     </tr>
                   )}
