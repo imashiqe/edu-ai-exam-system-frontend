@@ -107,19 +107,17 @@ export default function ResultDetails() {
           {result.answers?.map((answer: any, index: number) => {
             const q = answer.question;
 
-            const studentAnswer =
-              typeof answer.response === "object"
-                ? JSON.stringify(answer.response)
-                : answer.response;
+            const studentAnswer = answer.response ?? "No Answer";
 
             const correctAnswer =
-              typeof q.correctAnswer === "object"
-                ? JSON.stringify(q.correctAnswer)
-                : q.correctAnswer;
+              q.type === "MCQ"
+                ? q.correctAnswer?.key
+                : q.correctAnswer?.text || "-";
 
             const isCorrect =
-              JSON.stringify(answer.response) ===
-              JSON.stringify(q.correctAnswer);
+              q.type === "MCQ"
+                ? String(answer.response) === String(q.correctAnswer?.key)
+                : false;
 
             return (
               <div key={answer.id} className="card shadow-sm mb-3">
