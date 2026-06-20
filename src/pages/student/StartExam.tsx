@@ -38,6 +38,10 @@ function formatTime(sec: number) {
 
 export default function StartExam() {
   const [fingerprint, setFingerprint] = useState("");
+  const [verified, setVerified] = useState(false);
+  const [verifying, setVerifying] = useState(false);
+  const webcamRef = useRef<Webcam>(null);
+
   const { examId } = useParams();
   const nav = useNavigate();
   const user = getUser();
@@ -206,7 +210,7 @@ export default function StartExam() {
   // ---------- 1) Load exam + restore draft + start attempt ----------
   useEffect(() => {
     (async () => {
-      if (!examId) return;
+      if (!verified) return;
       setLoading(true);
       setErr(null);
 
@@ -258,7 +262,7 @@ export default function StartExam() {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [examId]);
+  }, [examId, verified]);
 
   // ---------- 2) Timer loop ----------
   useEffect(() => {
@@ -482,6 +486,7 @@ export default function StartExam() {
 
     return () => document.removeEventListener("keydown", handler);
   }, []);
+
   // if (!document.fullscreenElement) {
   //   setTabWarnings((p) => p + 1);
 
@@ -569,10 +574,6 @@ export default function StartExam() {
         auto ? "Time ended. Exam submitted." : "Exam submitted successfully 🎉",
       );
 
-      setTimeout(() => {
-        nav(`/st/results/${attemptId}`);
-      }, 800);
-
       // ✅ clear local draft + exit fullscreen after submit
 
       setTimeout(() => {
@@ -586,6 +587,72 @@ export default function StartExam() {
       setShowSubmitConfirm(false); // ✅ close modal as well
     }
   };
+
+  const verifyDevice = async () => {
+    try {
+      setVerifying(true);
+      const selfie = webcamRef.current?.getScreenshot();
+      const fp = await FingerprintJS.load();
+
+      const result = await fp.get();
+
+      setFingerprint(result.visitorId);
+
+      await document.documentElement.requestFullscreen();
+
+      toast.success("Device verified successfully");
+
+      setVerified(true);
+    } catch (error) {
+      toast.error("Verification failed");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  // finger
+  if (!verified) {
+    return (
+      <>
+        <PageHeader
+          title="Security Verification"
+          subtitle="Verify device before exam"
+        />
+
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-md-8">
+              <div className="card shadow-lg border-0">
+                <div className="card-body p-5 text-center">
+                  <h3 className="mb-4">Exam Security Check</h3>
+
+                  <div className="alert alert-info">
+                    Complete verification before starting exam
+                  </div>
+                  <div className="mb-4">
+                    <Webcam
+                      ref={webcamRef}
+                      audio={false}
+                      screenshotFormat="image/jpeg"
+                      className="rounded border"
+                      width={300}
+                    />
+                  </div>
+                  <button
+                    className="btn btn-primary btn-lg"
+                    onClick={verifyDevice}
+                    disabled={verifying}
+                  >
+                    {verifying ? "Verifying..." : "Verify & Start Exam"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
   // ---------- ui states ----------
   if (loading) {
     return (
