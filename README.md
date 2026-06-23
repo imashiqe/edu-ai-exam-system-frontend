@@ -265,26 +265,4 @@ APP_BASE_URL=http://localhost:5173
 
 ---
 
-## 📄 Thesis Information
 
-**Project Title:** Edu AI Exam System
-
-**Project Type:** Final Year Thesis Project
-
-**Department:** Computer Science & Engineering
-
-**Technologies:** React, TypeScript, Express.js, Prisma, PostgreSQL, AI
-
----
-
-## 👨‍💻 Developer
-
-**Ashiqur Rahman**
-
-Founder & CEO, Tantsoft
-
-Software Engineer | Full Stack Developer
-
-GitHub: https://github.com/imashiqe
-
-LinkedIn: https://linkedin.com/in/imashiqe
